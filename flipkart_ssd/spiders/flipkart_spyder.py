@@ -17,6 +17,8 @@ class FlipkartSpyderSpider(scrapy.Spider):
                 url, callback=self.parse_listPage, headers=self.headers
             )
 
+    # function to get list page
+
     def parse_listPage(self, response):
         products = response.xpath('.//div[@class="_4ddWXP"]')
         data = list()
@@ -33,8 +35,13 @@ class FlipkartSpyderSpider(scrapy.Spider):
                 href,
                 callback=self.get_details,
                 headers=self.headers,
+
+    # meta is used to send list page extracted data to be called in next get details func
                 meta={"name": name, "price": price, "discount": discount},
             )
+
+
+    # function to get detail page
 
     def get_details(self, response):
         name = response.meta.get("name")
@@ -49,17 +56,6 @@ class FlipkartSpyderSpider(scrapy.Spider):
         highlight = response.xpath(".//div[@class='_2418kt']/ul/li/text()").getall()
         services = response.xpath(".//div[@class='_2MJMLX']/text()").getall()
         desc = response.xpath(".//div[@class='_1mXcCf RmoJUa']/text()").get()
-        # data = dict()
-        # data["Name"] = name
-        # data["Price"] = price
-        # data["Discount"] = discount
-        # data["Rating"] = rating
-        # data["Offers"] = offers.replace
-        # data["Capacity"] = capacity
-        # data["Seller Name"] = seller
-        # data["Highlights"] = highlight
-        # data["Services"] = services
-        # data["Description"] = desc
 
 
         yield {
@@ -77,7 +73,9 @@ class FlipkartSpyderSpider(scrapy.Spider):
         }
 
 
-    def save_to_excel(self, Output , filename="properties.xlsx"):
-        df = pd.DataFrame(Output)
-        df.to_excel(filename, index=False)
-        print(f"Properties saved to {filename}")
+
+#  to run crawler simply execute the line in terminal
+
+# scrapy crawl flipkart_spyder -o filename.csv 
+
+
